@@ -1,150 +1,81 @@
-📄 Master Engineering & Product Requirements Document (ERD/PRD v2.0)
+Master Product Requirements Document (PRD)
 
-Proje: gri.
-Faz: MVP (Sprint 1-3)
-Odak Bölgeler: Tunalı & Bahçelievler
+Proje Adı: gri.
+Versiyon: MVP v1.1
 Doküman Sahibi: Business & Technical Product Owners
 
-1. BAŞARI METRİKLERİ VE KULLANICI PERSONASI (KPIs & Personas)
+1. Ürün Özeti ve Vizyon
 
-Sistemin başarılı sayılması için hedeflenen metrikler:
+gri., Ankara odağında geliştirilen, kullanıcıların mekanları sadece sundukları ürünlere (Pizza, Burger, Kahve) göre değil; o anki niyetlerine ve mekanın atmosferine (Vibe: Ders Çalışma, Date, Fiyat/Performans) göre keşfetmelerini sağlayan hibrit bir mekan bulma ve kitle kaynaklı (crowdsourced) değerlendirme platformudur.
 
-Performans KPI: API yanıt süresi 95. yüzdelikte (p95) < 250ms olmalıdır.
+2. Kapsam ve Coğrafi Sınırlar (MVP)
 
-İşletme KPI: "Time-to-first-review" (Kullanıcının uygulamayı açtıktan sonra ilk yorumunu bırakma süresi) < 3 dakika.
+Pilot Bölgeler: İlk lansman ve veri toplama aşaması, hedef kitlenin yoğun olduğu Tunalı ve Bahçelievler lokasyonları ile sınırlandırılacaktır.
 
-Ana Persona ("Zeynep", 21): ODTÜ öğrencisi. Tunalı'da kahve içecek bütçesi var (₺₺) ama priz ve sessizlik arıyor. Arama hızı ve veri doğruluğu (gerçekten priz var mı?) onun için ölümcüldür.
+Seed Data (Çekirdek Veri): Bu pilot bölgeler için başlangıçta ~200 mekanlık veri sisteme manuel olarak entegre edilecektir.
 
-2. KESİNLEŞTİRİLMİŞ VERİTABANI ŞEMASI (PostgreSQL)
+Kapsam Dışı: Sistemin ilk aşamada optimize çalışması ve veri kirliliğini önlemek adına pilot bölgeler dışındaki lokasyonlar (örn. Sincan, Keçiören) MVP harita sınırlarına dahil edilmeyecektir. İlerleyen fazlarda kullanıcıların "Yeni Mekan Ekle" talepleriyle havuz genişletilecektir.
 
-Tablo 1: users (Kullanıcılar)
+3. Mimari ve Teknoloji Yığını (Tech Stack)
 
-id: UUID (Primary Key, Auto-generated)
+Proje, dışa bağımlılığı (vendor lock-in) ortadan kaldıran ve tam veri kontrolü sağlayan bir altyapı üzerine kurulacaktır:
 
-email: VARCHAR(255) (Unique, Indexed)
+Mobil İstemci: Flutter veya React Native (iOS & Android).
 
-password_hash: VARCHAR(255) (Bcrypt ile şifrelenmiş)
+Backend & API: FastAPI (Python) - Render üzerinde koşulacaktır.
 
-created_at: TIMESTAMP (Default: NOW())
+Veritabanı: Bağımsız PostgreSQL (Lokasyon/Harita sorguları için PostGIS eklentisiyle).
 
-is_banned: BOOLEAN (Default: False) - Spam koruması için.
+Medya Depolama: Cloudflare R2 veya AWS S3.
 
-Tablo 2: venues (Mekanlar)
+Yetkilendirme (Auth): FastAPI üzerinde özel olarak yazılmış JWT (JSON Web Token) tabanlı sistem.
 
-id: UUID (Primary Key)
+Harita Motoru (In-App Map): Google Maps SDK (Uygulama içi harita görüntüleme ve pinleme işlemleri için native kütüphaneler kullanılarak harita API maliyetleri sıfırlanacaktır).
 
-name: VARCHAR(100) (Indexed)
+4. Fonksiyonel Gereksinimler (Functional Requirements)
 
-location: GEOGRAPHY(Point, 4326) - PostGIS formatında, SRID 4326.
+4.1. Kimlik Doğrulama (Authentication)
 
-price_level: SMALLINT (Check: 1, 2, 3) - (₺, ₺₺, ₺₺₺)
+Mekanları listelemek ve haritada görmek anonim kullanıcılara açıktır.
 
-is_active: BOOLEAN (Default: True) - Kapatılan mekanları soft-delete yapmak için.
+Puan vermek, yorum yapmak ve yeni mekan önermek JWT tabanlı oturum açmayı zorunlu kılar.
 
-Tablo 3: reviews (Değerlendirmeler / Crowdsourcing)
+4.2. Hibrit Filtreleme Sistemi (Ürün + Vibe)
 
-id: UUID (Primary Key)
+Sistem, mekanları nesne (entity) olarak ele alacak ve çoklu etiketleme (multi-tagging) yapacaktır.
 
-user_id: UUID (Foreign Key -> users.id)
+Ürün Etiketleri: Pizza, Hamburger, Döner, Diğer Ülke Mutfakları vb.
 
-venue_id: UUID (Foreign Key -> venues.id)
+Vibe Etiketleri: Ders Çalışma, Date, Fiyat-Performans.
 
-vibe_type: VARCHAR(50) - (Örn: "Ders Çalışma", "Date")
+Kullanıcı aynı anda "Tunalı'da" + "Ders Çalışma (Vibe)" + "Hamburger (Ürün)" filtrelerini birlikte çalıştırabilmelidir.
 
-has_sockets: BOOLEAN (Nullable)
+4.3. Çok Boyutlu Kullanıcı Değerlendirme Modülü (Crowdsourcing)
 
-quietness_score: SMALLINT (Check: 1-5, Nullable)
+Kullanıcılar, bir mekanın "vibe" özelliklerini doğrulamak için geri bildirimde bulunabilmelidir. Puanlama metrikleri kullanıcıyı yormayacak (low-friction) şekilde tasarlanmıştır:
 
-wifi_score: SMALLINT (Check: 1-5, Nullable)
+Priz Durumu: Var / Yok (Boolean Toggle)
 
-created_at: TIMESTAMP
+İnternet (Wi-Fi) Hızı: 1'den 5'e kadar (Yıldız/Slider)
 
-Tablo 4: tags & venue_tags (Çoklu Etiketleme - Many-to-Many)
+Sessizlik Seviyesi: 1'den 5'e kadar (Yıldız/Slider)
 
-tags: id (INT), name (VARCHAR), type (ENUM: 'PRODUCT', 'VIBE')
+Fiyat Seviyesi: ₺, ₺₺, ₺₺₺ (Sembolik 3'lü Seçim)
 
-venue_tags: venue_id (UUID), tag_id (INT) - Bileşik Primary Key.
+Medya: Kullanıcı kameradan veya galeriden mekana ait güncel fotoğraf yükleyebilmelidir.
 
-3. API SÖZLEŞMESİ (FastAPI Endpoints)
+4.4. Harita ve Konum Servisleri
 
-3.1. Mekan Arama ve Filtreleme (GET /api/v1/venues/search)
+Uygulama İçi Harita: Google Maps SDK kullanılarak postGIS üzerinden çekilen mekanlar harita üzerinde pinlenecektir.
 
-Açıklama: Haversine formülü ile mesafe hesaplanır.
+Cihazdan alınan GPS koordinatları ile PostGIS üzerinden "Yakınımdakiler" sorgusu çalıştırılacaktır.
 
-Query Parameters:
+Yol Tarifi Mantığı: Mekan detay sayfasından cihazın yerleşik harita uygulamalarına (Apple/Google Maps) yol tarifi için çıkış yapılabilmelidir (Böylece pahalı Directions API maliyetlerinden kaçınılır).
 
-lat (Float): Kullanıcının enlemi (Zorunlu)
+5. Fonksiyonel Olmayan Gereksinimler (Non-Functional Requirements)
 
-lon (Float): Kullanıcının boylamı (Zorunlu)
+Performans: Filtreleme ve harita üzerinde pin render etme işlemleri 2 saniyenin altında gerçekleşmelidir.
 
-radius_m (Int): Arama yarıçapı metre cinsinden (Default: 2000)
+Güvenlik: Kullanıcı şifreleri Bcrypt ile hashlenerek saklanacak; medya dosyalarına yetkisiz erişim CORS politikaları ve Signed URL'ler ile engellenecektir.
 
-vibe (String): Vibe filtresi (Opsiyonel)
-
-product_tags (List
-
-$$String$$
-
-): Ürün filtresi (Opsiyonel)
-
-Örnek Başarılı Yanıt (200 OK):
-
-{
-  "data": [
-    {
-      "id": "uuid-1234",
-      "name": "Kavaklıdere Roasters",
-      "distance_m": 450,
-      "price_level": 2,
-      "average_quietness": 4.2,
-      "tags": ["Kahve", "Ders Çalışma"]
-    }
-  ]
-}
-
-
-3.2. Değerlendirme Gönderme (POST /api/v1/reviews)
-
-Headers: Authorization: Bearer <JWT_TOKEN>
-
-Validation Kuralı: Kullanıcının koordinatı, mekana 100 metreden daha uzaksa 403 Forbidden (Geo-Spoofing Detected) hatası dönülür.
-
-4. İŞ KURALLARI VE ALGORİTMALAR (Business Logic)
-
-4.1. Varsayılan Sıralama (Default Ranking Algorithm)
-
-Kullanıcı ana ekrana düştüğünde mekanlar, puan ve mesafenin harmanlandığı "gri. Skoruna" göre sıralanır.
-
-Formül: GriScore = (Rating * 0.6) - ((Distance / 1000) * 0.4)
-
-4.2. Güven Çürüme Algoritması (Time Decay on Reviews)
-
-Veritabanı sorgularında, son 30 gün içinde girilen yorumların ağırlığı %100 kabul edilirken, 6 aydan eski yorumların sisteme etkisi matematiksel olarak %30'a düşürülür.
-
-5. UÇ DURUMLAR VE HATA YÖNETİMİ (Edge Cases)
-
-GPS İzni Reddedildi (Location Denied):
-
-Tunalı Hilmi Caddesi (Lat: 39.9015, Lon: 32.8600) varsayılan merkez (mock center) olarak kabul edilir.
-
-Ekranda uyarısı çıkarılır.
-
-Ağ Bağlantısı Koptu (Offline State):
-
-"Offline" ekranı çıkar. Filtreleme butonları deaktif (greyed-out) edilir.
-
-Arama Sonucu Boş Döndü (Zero State):
-
-"Aradığın kriterlerde bir mekan bulamadık ama şunlar ilgini çekebilir" diyerek filtrelerden biri (örn: Ürün) düşürülüp en yakın alternatifler listelenir.
-
-6. ALTYAPI, CI/CD VE GÜVENLİK (DevOps)
-
-6.1. Deployment Pipeline (Render)
-
-GitHub main branch'ine yapılan her "push", GitHub Actions tarafından yakalanır. PyTest testleri geçerse Render üzerindeki FastAPI sunucusuna otomatik deploy edilir.
-
-6.2. Güvenlik Duvarı ve Kısıtlamalar
-
-Rate Limiting: IP bazlı kısıtlama konulacaktır. Bir IP adresi /venues/search endpoint'ine dakikada maksimum 60 istek atabilir.
-
-Medya Yükleme (S3/R2): Uygulama fotoğrafları doğrudan Cloudflare R2/AWS S3'e yüklenir (FastAPI'den alınan Pre-signed URL ile).
+Tasarım Dili: "gri." ismine uygun; koyu mod (Dark Mode) destekli, minimalist ve bilgi hiyerarşisi net bir arayüz uygulanacaktır.
