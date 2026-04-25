@@ -1,81 +1,72 @@
-Master Product Requirements Document (PRD)
-
+Master Product Requirements Document (PRD) - v1.2
 Proje Adı: gri.
-Versiyon: MVP v1.1
+
+Versiyon: MVP v1.2
+
 Doküman Sahibi: Business & Technical Product Owners
 
+Durum: Güncellendi (Admin Paneli ve Manuel Veri Girişi Stratejisi Eklendi)
+
 1. Ürün Özeti ve Vizyon
+gri., Ankara odağında geliştirilen; kullanıcıların mekanları sadece sundukları ürünlere göre değil, o anki niyetlerine ve atmosferine (Vibe) göre keşfetmelerini sağlayan hibrit bir mekan bulma ve kitle kaynaklı (crowdsourced) değerlendirme platformudur.
 
-gri., Ankara odağında geliştirilen, kullanıcıların mekanları sadece sundukları ürünlere (Pizza, Burger, Kahve) göre değil; o anki niyetlerine ve mekanın atmosferine (Vibe: Ders Çalışma, Date, Fiyat/Performans) göre keşfetmelerini sağlayan hibrit bir mekan bulma ve kitle kaynaklı (crowdsourced) değerlendirme platformudur.
+2. Kapsam ve Veri Stratejisi (MVP)
+Pilot Bölgeler: Tunalı ve Bahçelievler.
 
-2. Kapsam ve Coğrafi Sınırlar (MVP)
+Küratörlü Seed Data: İlk aşamada ~200 mekan, "vibe" kalitesini korumak adına Admin Paneli üzerinden manuel olarak sisteme işlenecektir.
 
-Pilot Bölgeler: İlk lansman ve veri toplama aşaması, hedef kitlenin yoğun olduğu Tunalı ve Bahçelievler lokasyonları ile sınırlandırılacaktır.
-
-Seed Data (Çekirdek Veri): Bu pilot bölgeler için başlangıçta ~200 mekanlık veri sisteme manuel olarak entegre edilecektir.
-
-Kapsam Dışı: Sistemin ilk aşamada optimize çalışması ve veri kirliliğini önlemek adına pilot bölgeler dışındaki lokasyonlar (örn. Sincan, Keçiören) MVP harita sınırlarına dahil edilmeyecektir. İlerleyen fazlarda kullanıcıların "Yeni Mekan Ekle" talepleriyle havuz genişletilecektir.
+Kapsam Dışı: Pilot bölgeler dışı lokasyonlar ve otomatik Google Places veri çekme işlemleri (ilk fazda veri kirliliğini önlemek için devre dışıdır).
 
 3. Mimari ve Teknoloji Yığını (Tech Stack)
+Sistem, tamamen ayrık (decoupled) bir mikro-servis mimarisi mantığıyla kurgulanacaktır:
 
-Proje, dışa bağımlılığı (vendor lock-in) ortadan kaldıran ve tam veri kontrolü sağlayan bir altyapı üzerine kurulacaktır:
+3.1. Frontend & İstemci
+Mobil Uygulama: Flutter. Harita performansı, akıcı animasyonlar ve her iki platformda (iOS/Android) tutarlı görsel deneyim için seçilmiştir.
 
-Mobil İstemci: Flutter veya React Native (iOS & Android).
+Harita Motoru: Google Maps SDK (Native). Uygulama içi pinleme ve lokasyon gösterimi için kullanılacaktır.
 
-Backend & API: FastAPI (Python) - Render üzerinde koşulacaktır.
+3.2. Backend & API
+Framework: FastAPI (Python). Asenkron yapısı ve yüksek performanslı API süreçleri için tercih edilmiştir.
 
-Veritabanı: Bağımsız PostgreSQL (Lokasyon/Harita sorguları için PostGIS eklentisiyle).
+Altyapı: Render (Starter Plan). Cold-start sorununu önlemek ve düşük gecikme süresi sağlamak adına ücretli başlangıç planı kullanılacaktır.
 
-Medya Depolama: Cloudflare R2 veya AWS S3.
+Kimlik Doğrulama: JWT (Access & Refresh Token). Kullanıcı oturum sürekliliği ve güvenliği için çift token yapısı uygulanacaktır.
 
-Yetkilendirme (Auth): FastAPI üzerinde özel olarak yazılmış JWT (JSON Web Token) tabanlı sistem.
+4. Fonksiyonel Gereksinimler
+4.1. Kullanıcı Modülleri
+Hibrit Filtreleme: Kullanıcı "Tunalı" + "Hamburger" + "Ders Çalışma" kombinasyonunu yapabilmelidir.
 
-Harita Motoru (In-App Map): Google Maps SDK (Uygulama içi harita görüntüleme ve pinleme işlemleri için native kütüphaneler kullanılarak harita API maliyetleri sıfırlanacaktır).
+Crowdsourcing: * Priz: Var/Yok (Toggle)
 
-4. Fonksiyonel Gereksinimler (Functional Requirements)
+İnternet/Sessizlik: 1-5 (Slider)
 
-4.1. Kimlik Doğrulama (Authentication)
+Fiyat: ₺, ₺₺, ₺₺₺
 
-Mekanları listelemek ve haritada görmek anonim kullanıcılara açıktır.
+Harita: Google Maps SDK ile native pinleme ve cihazın kendi haritasına (Apple/Google) "Yol Tarifi" için yönlendirme.
 
-Puan vermek, yorum yapmak ve yeni mekan önermek JWT tabanlı oturum açmayı zorunlu kılar.
+4.2. Admin ve Operasyon Modülü (Yeni)
+Bu modül, business tarafının veriyi yönetmesi için kritik öneme sahiptir:
 
-4.2. Hibrit Filtreleme Sistemi (Ürün + Vibe)
+Mekan Yönetimi: Manuel mekan ekleme, koordinat belirleme ve kürasyon etiketlerini (Vibe/Ürün) atama.
 
-Sistem, mekanları nesne (entity) olarak ele alacak ve çoklu etiketleme (multi-tagging) yapacaktır.
+Toplu Veri Aktarımı (Bulk Import): Hazırlanan Excel/CSV listelerini tek tıkla veritabanına aktarma.
 
-Ürün Etiketleri: Pizza, Hamburger, Döner, Diğer Ülke Mutfakları vb.
+İçerik Moderasyonu: Kullanıcıların yüklediği fotoğrafları ve yazdığı yorumları onaylama/reddetme arayüzü.
 
-Vibe Etiketleri: Ders Çalışma, Date, Fiyat-Performans.
+Dinamik Etiket Yönetimi: Yeni "Vibe" veya "Ürün" kategorileri oluşturma (Örn: "Pet Friendly" etiketini kod değiştirmeden sisteme ekleme).
 
-Kullanıcı aynı anda "Tunalı'da" + "Ders Çalışma (Vibe)" + "Hamburger (Ürün)" filtrelerini birlikte çalıştırabilmelidir.
+5. Veri Yapısı ve İlişkiler (Teknik Not)
+Mekanlar ve Etiketler arasında Many-to-Many ilişkisi kurulacaktır.
 
-4.3. Çok Boyutlu Kullanıcı Değerlendirme Modülü (Crowdsourcing)
+venues tablosu: Ad, koordinat (geometry), açıklama.
 
-Kullanıcılar, bir mekanın "vibe" özelliklerini doğrulamak için geri bildirimde bulunabilmelidir. Puanlama metrikleri kullanıcıyı yormayacak (low-friction) şekilde tasarlanmıştır:
+tags tablosu: Etiket adı, tipi (Vibe veya Ürün).
 
-Priz Durumu: Var / Yok (Boolean Toggle)
+venue_tags (Junction): Hangi mekanın hangi etiketlere sahip olduğu.
 
-İnternet (Wi-Fi) Hızı: 1'den 5'e kadar (Yıldız/Slider)
+6. Fonksiyonel Olmayan Gereksinimler
+Görsel Optimizasyonu: Admin veya kullanıcı tarafından yüklenen tüm görseller backend'de işlenerek düşük boyutlu WebP formatına çevrilmelidir (LCP performansını artırmak için).
 
-Sessizlik Seviyesi: 1'den 5'e kadar (Yıldız/Slider)
+Güvenlik: Admin paneli sadece yetkili IP'lere veya özel admin rolleriyle kısıtlanmış JWT'lere açık olacaktır.
 
-Fiyat Seviyesi: ₺, ₺₺, ₺₺₺ (Sembolik 3'lü Seçim)
-
-Medya: Kullanıcı kameradan veya galeriden mekana ait güncel fotoğraf yükleyebilmelidir.
-
-4.4. Harita ve Konum Servisleri
-
-Uygulama İçi Harita: Google Maps SDK kullanılarak postGIS üzerinden çekilen mekanlar harita üzerinde pinlenecektir.
-
-Cihazdan alınan GPS koordinatları ile PostGIS üzerinden "Yakınımdakiler" sorgusu çalıştırılacaktır.
-
-Yol Tarifi Mantığı: Mekan detay sayfasından cihazın yerleşik harita uygulamalarına (Apple/Google Maps) yol tarifi için çıkış yapılabilmelidir (Böylece pahalı Directions API maliyetlerinden kaçınılır).
-
-5. Fonksiyonel Olmayan Gereksinimler (Non-Functional Requirements)
-
-Performans: Filtreleme ve harita üzerinde pin render etme işlemleri 2 saniyenin altında gerçekleşmelidir.
-
-Güvenlik: Kullanıcı şifreleri Bcrypt ile hashlenerek saklanacak; medya dosyalarına yetkisiz erişim CORS politikaları ve Signed URL'ler ile engellenecektir.
-
-Tasarım Dili: "gri." ismine uygun; koyu mod (Dark Mode) destekli, minimalist ve bilgi hiyerarşisi net bir arayüz uygulanacaktır.
+Ölçeklenebilirlik: Frontend ve Backend ayrı servisler olduğu için, yoğunluk durumunda sadece API servisi scale edilebilecektir.
