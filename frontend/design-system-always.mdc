@@ -1,0 +1,21 @@
+---
+description: Always enforce frontend design system from design-system.md
+globs: /frontend
+alwaysApply: false
+---
+
+# Frontend Design System Enforcement
+
+Bu projede UI/UX ile ilgili her değişiklikte `frontend/design-system.md` tek kaynak kabul edilir.
+
+## Zorunlu Kurallar
+
+- Yeni veya güncellenen frontend bileşenleri, sayfalar ve stiller dokümandaki token, tipografi, spacing, radius ve durum renklerine uymalı.
+- Hard-coded stil değerleri (renk, spacing, radius, font) yerine dokümandaki tasarım tokenlari tercih edilmeli.
+- Buton, badge, kart, form, navigasyon ve durum ekranlari için dokümandaki davranis ve varyantlar korunmali.
+- Responsive davranislar dokümandaki breakpoint ve grid kurallarina uygun olmali.
+- UI önerisi/uygulamasi yaparken kararlar bu dosyaya referansla aciklanmali.
+
+## Uygulama Notu
+
+Eger bir istek tasarim sistemiyle celisiyorsa, once celiskiyi belirt ve `frontend/design-system.md` ile uyumlu alternatif öner.
