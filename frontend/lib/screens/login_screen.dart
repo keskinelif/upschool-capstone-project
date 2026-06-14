@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: FilledButton.styleFrom(
                           backgroundColor: GriColors.primary,
                           foregroundColor: GriColors.onPrimary,
-                          disabledBackgroundColor: GriColors.primary.withValues(alpha: 0.4),
+                          disabledBackgroundColor: GriColors.primary.withAlpha(102),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(GriRadii.full),
                           ),
