@@ -1,12 +1,12 @@
 ---
-description: Always enforce frontend design system from design-system.md
+description: Always enforce frontend design system from DesignSystem.md
 globs: /frontend
 alwaysApply: false
 ---
 
 # Frontend Design System Enforcement
 
-Bu projede UI/UX ile ilgili her değişiklikte `frontend/design-system.md` tek kaynak kabul edilir.
+Bu projede UI/UX ile ilgili her değişiklikte `DesignSystem.md` tek kaynak kabul edilir.
 
 ## Zorunlu Kurallar
 
@@ -18,4 +18,4 @@ Bu projede UI/UX ile ilgili her değişiklikte `frontend/design-system.md` tek k
 
 ## Uygulama Notu
 
-Eger bir istek tasarim sistemiyle celisiyorsa, once celiskiyi belirt ve `frontend/design-system.md` ile uyumlu alternatif öner.
+Eger bir istek tasarim sistemiyle celisiyorsa, once celiskiyi belirt ve `DesignSystem.md` ile uyumlu alternatif öner.
