@@ -19,12 +19,12 @@ Her girişte kısa tutun:
 
 ## Zaman çizelgesi
 
-### 2026-06 — Proje başlangıcı
+### 2026-04 — Proje başlangıcı
 
 - `PRD.md` yazıldı; gri. vizyonu, pilot bölgeler (Tunalı, Bahçelievler), admin stratejisi tanımlandı.
 - `Plan.md` PRD'den user story'lere bölündü; US3 (harita SDK) ve US5 (bulk import) bilinçli ertelendi.
 
-### 2026-06 — MVP iskelet (commit: `f80b270`)
+### 2026-04 — MVP iskelet (commit: `f80b270`)
 
 **Backend**
 - FastAPI iskelet: auth (JWT), venues, tags, admin, contributions, map, system route'ları.
