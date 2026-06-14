@@ -326,7 +326,7 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.check_circle_outline, size: 48, color: GriColors.muted),
+              const Icon(Icons.check_circle_outline, size: 48, color: GriColors.muted),
               const SizedBox(height: GriSpacing.sp4),
               Text(
                 'Onay bekleyen yorum yok.',

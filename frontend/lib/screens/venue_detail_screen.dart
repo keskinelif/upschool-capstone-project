@@ -177,7 +177,7 @@ class _VenueDetailScreenState extends State<VenueDetailScreen> {
                           style: GriTheme.body().copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(width: GriSpacing.sp3),
-                        Icon(Icons.place_outlined, size: 16, color: GriColors.secondary),
+                        const Icon(Icons.place_outlined, size: 16, color: GriColors.secondary),
                         const SizedBox(width: GriSpacing.sp1),
                         Expanded(
                           child: Text(venue.area, style: GriTheme.caption()),

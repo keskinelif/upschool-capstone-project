@@ -72,7 +72,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.star_border, size: 48, color: GriColors.muted),
+              const Icon(Icons.star_border, size: 48, color: GriColors.muted),
               const SizedBox(height: GriSpacing.sp4),
               Text('Favoriler', style: GriTheme.h1()),
               const SizedBox(height: GriSpacing.sp2),

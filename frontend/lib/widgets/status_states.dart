@@ -20,7 +20,7 @@ class ErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.warning_amber_outlined, size: 48, color: GriColors.muted),
+            const Icon(Icons.warning_amber_outlined, size: 48, color: GriColors.muted),
             const SizedBox(height: GriSpacing.sp4),
             Text('Bağlantı Hatası', style: GriTheme.h1()),
             const SizedBox(height: GriSpacing.sp2),
@@ -62,7 +62,7 @@ class EmptyResultsState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search, size: 48, color: GriColors.muted),
+            const Icon(Icons.search, size: 48, color: GriColors.muted),
             const SizedBox(height: GriSpacing.sp4),
             Text('Sonuç Bulunamadı', style: GriTheme.h1()),
             const SizedBox(height: GriSpacing.sp2),
@@ -121,7 +121,7 @@ class AiDiscoverErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.auto_awesome_outlined, size: 48, color: GriColors.muted),
+            const Icon(Icons.auto_awesome_outlined, size: 48, color: GriColors.muted),
             const SizedBox(height: GriSpacing.sp4),
             Text('Keşif şu an kullanılamıyor', style: GriTheme.h1()),
             const SizedBox(height: GriSpacing.sp2),
