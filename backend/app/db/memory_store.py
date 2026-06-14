@@ -149,64 +149,79 @@ def seed_data() -> None:
     tag_quiet_vibe = _seed_tag("Sessiz", TagType.vibe)
 
     venue_kutuphane = _seed_venue(
-        name="Kütüphane Kafe",
+        name="V24 Coffee Club",
         area="Tunalı",
-        lat=39.908,
-        lng=32.861,
-        description="Sessiz çalışma ortamı, priz mevcut.",
+        lat=39.9044246,
+        lng=32.8613693,
+        description="Renkli ve sıradışı bir iç mekan.",
         tag_ids=[category_tags["Study Date"], category_tags["Kahve"], tag_study_vibe, tag_quiet_vibe],
         price_band=PriceBand.medium,
         image_urls=[
-            _venue_photo("kutuphane-kafe-1.jpg"),
-            _venue_photo("kutuphane-kafe-2.jpg"),
-            _venue_photo("kutuphane-kafe-3.jpg"),
+            _venue_photo("v24-1.png"),
+            _venue_photo("v24-2.png"),
+            _venue_photo("v24-3.png"),
         ],
-        maps_url="https://www.google.com/maps?q=39.908,32.861",
+        maps_url="https://www.google.com/maps/place/V24+Coffee+Club/@39.9044062,32.8615724,15z/data=!4m6!3m5!1s0x14d34f1da2fc0527:0xd22fa5184e229224!8m2!3d39.9044246!4d32.8613693!16s%2Fg%2F11y9kpkx5m!5m1!1e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     )
     venue_bahce = _seed_venue(
-        name="Bahçe Espresso",
-        area="Bahçelievler",
-        lat=39.921,
-        lng=32.824,
+        name="respublika",
+        area="Tunalı",
+        lat=39.905124,
+        lng=32.8649269,
         description="Özel kahve çeşitleri ve sakin atmosfer.",
         tag_ids=[category_tags["Kahve"]],
         price_band=PriceBand.low,
         image_urls=[
-            _venue_photo("bahce-espresso-1.jpg"),
-            _venue_photo("bahce-espresso-2.jpg"),
-            _venue_photo("bahce-espresso-3.jpg"),
+            _venue_photo("respublika-1.png"),
+            _venue_photo("respublika-2.png"),
+            _venue_photo("respublika-3.png"),
         ],
-        maps_url="https://www.google.com/maps?q=39.921,32.824",
+        maps_url="https://www.google.com/maps/place/respublika/@39.9051054,32.8648156,3a,75y,90t/data=!3m7!1e2!3m5!1sCIABIhCZNjqqGgXXo7zCCqJI79xC!2e10!3e12!7i4032!8i3024!4m11!1m2!2m1!1sstudy!3m7!1s0x14d34fb40f9f763d:0xdc9a77d81e27eaf6!8m2!3d39.905124!4d32.8649269!10e5!15sCgVzdHVkeVoHIgVzdHVkeZIBBGNhZmWaAURDaTlEUVVsUlFVTnZaRU5vZEhsalJqbHZUMnBDYkZoNmJEQmlSbEkyVGxVeFZtTXlkRkpPVlRGcVdEQTBOR0pJWXhBQuABAPoBBAgREDw!16s%2Fg%2F11rg38mt61!5m1!1e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     )
     venue_kokteyl = _seed_venue(
-        name="Gece Kokteyl",
+        name="Piccolo Cocktails & More",
         area="Tunalı",
-        lat=39.912,
-        lng=32.858,
+        lat=39.895031,
+        lng=32.855668,
         description="Romantik akşam kokteylleri.",
         tag_ids=[category_tags["Romantik Date/ Kokteyl"]],
         price_band=PriceBand.high,
         image_urls=[
-            _venue_photo("gece-kokteyl-1.jpg"),
-            _venue_photo("gece-kokteyl-2.jpg"),
-            _venue_photo("gece-kokteyl-3.jpg"),
+            _venue_photo("piccolo-1.png"),
+            _venue_photo("piccolo-2.png"),
+            _venue_photo("piccolo-3.png"),
         ],
-        maps_url="https://www.google.com/maps?q=39.912,32.858",
+        maps_url="https://www.google.com/maps/place/Piccolo+Cocktails+%26+More/@39.895031,32.855668,17z/data=!4m6!3m5!1s0x14d34f79575b4b4d:0x47bd3af3784906cc!8m2!3d39.895031!4d32.855668!16s%2Fg%2F11yfvbpbtg!5m1!1e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     )
     venue_tatli = _seed_venue(
-        name="Tatlı Köşe",
+        name="Suflabs",
         area="Bahçelievler",
-        lat=39.919,
-        lng=32.826,
-        description="Ucuz ve lezzetli tatlı çeşitleri.",
+        lat=39.9220226,
+        lng=32.8251176,
+        description="Uygun fiyat ve lezzetli sufle çeşitleri.",
         tag_ids=[category_tags["Tatlı"]],
         price_band=PriceBand.low,
         image_urls=[
-            _venue_photo("tatli-kose-1.jpg"),
-            _venue_photo("tatli-kose-2.jpg"),
-            _venue_photo("tatli-kose-3.jpg"),
+            _venue_photo("suflabs-1.png"),
+            _venue_photo("suflabs-2.png"),
+            _venue_photo("suflabs-3.png"),
         ],
-        maps_url="https://www.google.com/maps?q=39.919,32.826",
+        maps_url="https://www.google.com/maps/place/Suflabs/@39.9211072,32.825178,17z/data=!4m15!1m8!3m7!1s0x14d34f0d7e07ad4f:0x2b874c753b7cdced!2sSuflabs!8m2!3d39.9220226!4d32.8251176!10e5!16s%2Fg%2F11sxwzn_gj!3m5!1s0x14d34f0d7e07ad4f:0x2b874c753b7cdced!8m2!3d39.9220226!4d32.8251176!16s%2Fg%2F11sxwzn_gj!5m1!1e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
+    )
+    venue_fp = _seed_venue(
+        name="Çeyrek",
+        area="Tunalı",
+        lat=39.907,
+        lng=32.862,
+        description="Fiyat performans odaklı lezzetli burger ve atıştırmalıklar.",
+        tag_ids=[category_tags["F/P Yemek"]],
+        price_band=PriceBand.low,
+        image_urls=[
+            _venue_photo("çeyrek-1.png"),
+            _venue_photo("çeyrek-2.png"),
+            _venue_photo("çeyrek-3.png"),
+        ],
+        maps_url="https://www.google.com/maps?q=39.907,32.862",
     )
 
     _seed_review(
@@ -274,6 +289,18 @@ def seed_data() -> None:
         username="selin",
         text="Küçük ama şirin bir yer, tatlılar her zaman taze.",
         created_at=datetime(2026, 6, 10, 15, 40, tzinfo=timezone.utc),
+    )
+    _seed_review(
+        venue_id=venue_fp,
+        username="mehmet",
+        text="Fiyatına göre porsiyon çok iyi, burgerleri doyurucu.",
+        created_at=datetime(2026, 6, 11, 13, 0, tzinfo=timezone.utc),
+    )
+    _seed_review(
+        venue_id=venue_fp,
+        username="can",
+        text="Öğle arası hızlı ve uygun fiyatlı bir seçenek.",
+        created_at=datetime(2026, 6, 12, 12, 30, tzinfo=timezone.utc),
     )
 
     item = ModerationItem(
