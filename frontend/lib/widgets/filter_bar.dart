@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/categories.dart';
+
 class FilterBar extends StatelessWidget {
   const FilterBar({
     required this.location,
@@ -19,7 +21,7 @@ class FilterBar extends StatelessWidget {
   final ValueChanged<String> onVibeChanged;
 
   static const locations = ['Tunalı', 'Bahçelievler'];
-  static const products = ['Hamburger', 'Kahve', 'Tatlı'];
+  static const products = Categories.all;
   static const vibes = ['Ders Çalışma', 'Sohbet', 'Sessiz'];
 
   @override

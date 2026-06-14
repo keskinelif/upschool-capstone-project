@@ -4,7 +4,8 @@ import '../services/api_client.dart';
 import '../services/auth_exception.dart';
 import '../services/auth_session.dart';
 import '../theme/gri_theme.dart';
-import 'explore_screen.dart';
+import 'admin_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,8 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       AuthSession.save(tokens);
       if (!mounted) return;
+      final destination = tokens.isAdmin ? const AdminScreen() : const HomeScreen();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const ExploreScreen()),
+        MaterialPageRoute<void>(builder: (_) => destination),
       );
     } on AuthException catch (err) {
       if (!mounted) return;

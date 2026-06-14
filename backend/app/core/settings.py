@@ -1,8 +1,15 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=_BACKEND_DIR / ".env",
+        env_file_encoding="utf-8",
+    )
 
     app_name: str = "gri.api"
     jwt_secret: str = "change-me"
@@ -11,6 +18,8 @@ class Settings(BaseSettings):
     refresh_token_ttl_minutes: int = 60 * 24 * 14
     admin_allowed_ips: str = "127.0.0.1,::1"
     pilot_areas: str = "Tunalı,Bahçelievler"
+    gemini_api_key: str = ""
+    llm_model: str = "gemini-2.5-flash"
 
 
 settings = Settings()

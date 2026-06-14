@@ -9,6 +9,8 @@ class AuthSession {
 
   static bool get isLoggedIn => _tokens != null;
 
+  static bool get isAdmin => _tokens?.isAdmin ?? false;
+
   static void save(AuthTokens tokens) {
     _tokens = tokens;
   }

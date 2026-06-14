@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../models/ai_discover_result.dart';
 import '../models/auth_tokens.dart';
+import '../models/tag.dart';
 import '../models/venue.dart';
 import 'auth_exception.dart';
+import 'auth_session.dart';
 
 class ApiClient {
   ApiClient({
@@ -18,6 +21,14 @@ class ApiClient {
 
   final http.Client _client;
   final String _baseUrl;
+
+  Map<String, String> get _authHeaders {
+    final token = AuthSession.tokens?.accessToken;
+    return {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
   Future<AuthTokens> login({
     required String username,
@@ -44,6 +55,105 @@ class ApiClient {
     return AuthTokens.fromJson(data);
   }
 
+  Future<List<Tag>> fetchTags() async {
+    final response = await _client.get(Uri.parse('$_baseUrl/tags'));
+    if (response.statusCode != 200) {
+      throw Exception('Etiketler yüklenemedi: ${response.statusCode}');
+    }
+    final data = jsonDecode(response.body) as List<dynamic>;
+    return data
+        .map((item) => Tag.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Venue> createVenue({
+    required String name,
+    required String area,
+    required double lat,
+    required double lng,
+    required String description,
+    required List<String> tagIds,
+    required String priceBand,
+    String? imageUrl,
+    required String mapsUrl,
+  }) async {
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/venues'),
+      headers: _authHeaders,
+      body: jsonEncode({
+        'name': name,
+        'area': area,
+        'lat': lat,
+        'lng': lng,
+        'description': description,
+        'tag_ids': tagIds,
+        'price_band': priceBand,
+        if (imageUrl != null && imageUrl.isNotEmpty) 'image_url': imageUrl,
+        'maps_url': mapsUrl,
+      }),
+    );
+
+    if (response.statusCode == 401) {
+      throw AuthException('Oturum süresi doldu');
+    }
+    if (response.statusCode == 403) {
+      throw AuthException('Admin yetkisi gerekli');
+    }
+    if (response.statusCode != 200) {
+      final body = response.body;
+      throw Exception('Mekan eklenemedi: ${response.statusCode} $body');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return Venue.fromJson(data);
+  }
+
+  Future<Venue> updateVenue({
+    required String venueId,
+    required String name,
+    required String area,
+    required double lat,
+    required double lng,
+    required String description,
+    required List<String> tagIds,
+    required String priceBand,
+    String? imageUrl,
+    required String mapsUrl,
+  }) async {
+    final response = await _client.patch(
+      Uri.parse('$_baseUrl/venues/$venueId'),
+      headers: _authHeaders,
+      body: jsonEncode({
+        'name': name,
+        'area': area,
+        'lat': lat,
+        'lng': lng,
+        'description': description,
+        'tag_ids': tagIds,
+        'price_band': priceBand,
+        'image_url': imageUrl?.isNotEmpty == true ? imageUrl : null,
+        'maps_url': mapsUrl,
+      }),
+    );
+
+    if (response.statusCode == 401) {
+      throw AuthException('Oturum süresi doldu');
+    }
+    if (response.statusCode == 403) {
+      throw AuthException('Admin yetkisi gerekli');
+    }
+    if (response.statusCode == 404) {
+      throw Exception('Mekan bulunamadı');
+    }
+    if (response.statusCode != 200) {
+      final body = response.body;
+      throw Exception('Mekan güncellenemedi: ${response.statusCode} $body');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return Venue.fromJson(data);
+  }
+
   Future<List<Venue>> fetchVenues({
     required String location,
     required String productTag,
@@ -52,7 +162,28 @@ class ApiClient {
     final uri = Uri.parse(
       '$_baseUrl/venues?location=$location&product_tags=$productTag&vibe_tags=$vibeTag',
     );
-    final response = await _client.get(uri);
+    return _parseVenueList(await _client.get(uri));
+  }
+
+  Future<List<Venue>> fetchAllVenues() async {
+    final uri = Uri.parse('$_baseUrl/venues');
+    return _parseVenueList(await _client.get(uri));
+  }
+
+  Future<List<Venue>> fetchVenuesForCategory(
+    String category, {
+    String? location,
+    String? priceBand,
+  }) async {
+    final params = <String, String>{'product_tags': category};
+    if (location != null) params['location'] = location;
+    if (priceBand != null) params['price_band'] = priceBand;
+
+    final uri = Uri.parse('$_baseUrl/venues').replace(queryParameters: params);
+    return _parseVenueList(await _client.get(uri));
+  }
+
+  Future<List<Venue>> _parseVenueList(http.Response response) async {
     if (response.statusCode != 200) {
       throw Exception('Failed to load venues: ${response.statusCode}');
     }
@@ -60,5 +191,23 @@ class ApiClient {
     return data
         .map((item) => Venue.fromJson(item as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<AiDiscoverResult> discoverWithAi(String query) async {
+    final response = await _client.post(
+      Uri.parse('$_baseUrl/ai/discover'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'query': query}),
+    );
+
+    if (response.statusCode == 422) {
+      throw Exception('Lütfen daha açıklayıcı bir arama yazın.');
+    }
+    if (response.statusCode != 200) {
+      throw Exception('Keşif isteği başarısız: ${response.statusCode}');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return AiDiscoverResult.fromJson(data, query);
   }
 }

@@ -3,3 +3,4 @@ uvicorn[standard]
 pydantic-settings
 PyJWT
 python-multipart
+google-genai

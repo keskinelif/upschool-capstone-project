@@ -16,7 +16,19 @@ abstract final class GriRadii {
   static const sm = 6.0;
   static const md = 10.0;
   static const lg = 16.0;
+  static const xl = 24.0;
   static const full = 999.0;
+}
+
+abstract final class GriSpacing {
+  static const sp1 = 4.0;
+  static const sp2 = 8.0;
+  static const sp3 = 12.0;
+  static const sp4 = 16.0;
+  static const sp5 = 20.0;
+  static const sp6 = 24.0;
+  static const sp8 = 32.0;
+  static const sp12 = 48.0;
 }
 
 abstract final class GriTheme {
@@ -88,5 +100,23 @@ abstract final class GriTheme {
   static TextStyle caption() => GoogleFonts.dmSans(
         fontSize: 12,
         color: GriColors.secondary,
+      );
+
+  static TextStyle h1() => GoogleFonts.dmSans(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: GriColors.primary,
+      );
+
+  static TextStyle h3() => GoogleFonts.dmSans(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: GriColors.primary,
+      );
+
+  static TextStyle navLabel({required bool active}) => GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+        color: active ? GriColors.primary : GriColors.muted,
       );
 }

@@ -25,7 +25,7 @@ async def login(payload: LoginRequest) -> TokenPair:
         ttl_minutes=settings.refresh_token_ttl_minutes,
         extra={"is_admin": user["is_admin"]},
     )
-    return TokenPair(access_token=access, refresh_token=refresh)
+    return TokenPair(access_token=access, refresh_token=refresh, is_admin=user["is_admin"])
 
 
 @router.post("/refresh", response_model=TokenPair)
@@ -48,4 +48,8 @@ async def refresh(payload: RefreshRequest) -> TokenPair:
         ttl_minutes=settings.refresh_token_ttl_minutes,
         extra={"is_admin": token_payload.get("is_admin", False)},
     )
-    return TokenPair(access_token=access, refresh_token=refresh_token)
+    return TokenPair(
+        access_token=access,
+        refresh_token=refresh_token,
+        is_admin=bool(token_payload.get("is_admin", False)),
+    )

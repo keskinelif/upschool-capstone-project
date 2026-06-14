@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'screens/explore_screen.dart';
+import 'screens/admin_screen.dart';
+import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'services/auth_session.dart';
 import 'theme/gri_theme.dart';
@@ -16,7 +17,13 @@ class GriApp extends StatelessWidget {
       title: 'gri.',
       debugShowCheckedModeBanner: false,
       theme: GriTheme.material(),
-      home: AuthSession.isLoggedIn ? const ExploreScreen() : const LoginScreen(),
+      home: _initialScreen(),
     );
+  }
+
+  Widget _initialScreen() {
+    if (!AuthSession.isLoggedIn) return const LoginScreen();
+    if (AuthSession.isAdmin) return const AdminScreen();
+    return const HomeScreen();
   }
 }

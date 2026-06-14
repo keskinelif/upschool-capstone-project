@@ -6,7 +6,9 @@ import '../widgets/filter_bar.dart';
 import '../widgets/venue_card.dart';
 
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key});
+  const ExploreScreen({this.initialProduct, super.key});
+
+  final String? initialProduct;
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -15,7 +17,7 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   final ApiClient _api = ApiClient();
   String _location = FilterBar.locations.first;
-  String _product = FilterBar.products.first;
+  late String _product;
   String _vibe = FilterBar.vibes.first;
   bool _isLoading = true;
   String? _error;
@@ -24,6 +26,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   void initState() {
     super.initState();
+    _product = widget.initialProduct ?? FilterBar.products.first;
     _load();
   }
 
@@ -51,7 +54,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('gri. keşfet')),
+      appBar: AppBar(title: Text(_product)),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
