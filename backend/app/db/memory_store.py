@@ -30,6 +30,14 @@ DEMO_USERS: list[tuple[str, str]] = [
 
 RESERVED_USERNAMES = {"admin", "demo"}
 
+_REPO_RAW_VENUE_PHOTOS = (
+    "https://raw.githubusercontent.com/keskinelif/upschool-capstone-project/main/backend/static/venues"
+)
+
+
+def _venue_photo(filename: str) -> str:
+    return f"{_REPO_RAW_VENUE_PHOTOS}/{filename}"
+
 
 def new_id() -> str:
     return str(uuid4())
@@ -149,9 +157,9 @@ def seed_data() -> None:
         tag_ids=[category_tags["Study Date"], category_tags["Kahve"], tag_study_vibe, tag_quiet_vibe],
         price_band=PriceBand.medium,
         image_urls=[
-            "https://picsum.photos/seed/study-date-tunali-1/800/600",
-            "https://picsum.photos/seed/study-date-tunali-2/800/600",
-            "https://picsum.photos/seed/study-date-tunali-3/800/600",
+            _venue_photo("kutuphane-kafe-1.jpg"),
+            _venue_photo("kutuphane-kafe-2.jpg"),
+            _venue_photo("kutuphane-kafe-3.jpg"),
         ],
         maps_url="https://www.google.com/maps?q=39.908,32.861",
     )
@@ -164,9 +172,9 @@ def seed_data() -> None:
         tag_ids=[category_tags["Kahve"]],
         price_band=PriceBand.low,
         image_urls=[
-            "https://picsum.photos/seed/kahve-bahcelievler-1/800/600",
-            "https://picsum.photos/seed/kahve-bahcelievler-2/800/600",
-            "https://picsum.photos/seed/kahve-bahcelievler-3/800/600",
+            _venue_photo("bahce-espresso-1.jpg"),
+            _venue_photo("bahce-espresso-2.jpg"),
+            _venue_photo("bahce-espresso-3.jpg"),
         ],
         maps_url="https://www.google.com/maps?q=39.921,32.824",
     )
@@ -179,9 +187,9 @@ def seed_data() -> None:
         tag_ids=[category_tags["Romantik Date/ Kokteyl"]],
         price_band=PriceBand.high,
         image_urls=[
-            "https://picsum.photos/seed/romantik-tunali-1/800/600",
-            "https://picsum.photos/seed/romantik-tunali-2/800/600",
-            "https://picsum.photos/seed/romantik-tunali-3/800/600",
+            _venue_photo("gece-kokteyl-1.jpg"),
+            _venue_photo("gece-kokteyl-2.jpg"),
+            _venue_photo("gece-kokteyl-3.jpg"),
         ],
         maps_url="https://www.google.com/maps?q=39.912,32.858",
     )
@@ -194,9 +202,9 @@ def seed_data() -> None:
         tag_ids=[category_tags["Tatlı"]],
         price_band=PriceBand.low,
         image_urls=[
-            "https://picsum.photos/seed/tatli-bahcelievler-1/800/600",
-            "https://picsum.photos/seed/tatli-bahcelievler-2/800/600",
-            "https://picsum.photos/seed/tatli-bahcelievler-3/800/600",
+            _venue_photo("tatli-kose-1.jpg"),
+            _venue_photo("tatli-kose-2.jpg"),
+            _venue_photo("tatli-kose-3.jpg"),
         ],
         maps_url="https://www.google.com/maps?q=39.919,32.826",
     )
