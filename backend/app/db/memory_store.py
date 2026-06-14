@@ -210,10 +210,10 @@ def seed_data() -> None:
     )
     venue_fp = _seed_venue(
         name="Çeyrek",
-        area="Tunalı",
-        lat=39.907,
-        lng=32.862,
-        description="Fiyat performans odaklı lezzetli burger ve atıştırmalıklar.",
+        area="Bahçelievler",
+        lat=39.9196963,
+        lng=32.8302113,
+        description="Fiyat performans odaklı lezzetli yemek çeşitleri.",
         tag_ids=[category_tags["F/P Yemek"]],
         price_band=PriceBand.low,
         image_urls=[
@@ -221,7 +221,7 @@ def seed_data() -> None:
             _venue_photo("çeyrek-2.png"),
             _venue_photo("çeyrek-3.png"),
         ],
-        maps_url="https://www.google.com/maps?q=39.907,32.862",
+        maps_url="https://www.google.com/maps/place/%C3%87eyrek/@39.919487,32.8299632,16.75z/data=!4m6!3m5!1s0x14d34fb174206309:0xafa24e6bc8f3a144!8m2!3d39.9196963!4d32.8302113!16s%2Fg%2F11z384b_qc!5m1!1e2?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     )
 
     _seed_review(
