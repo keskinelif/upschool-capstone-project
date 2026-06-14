@@ -1,35 +1,23 @@
 abstract final class VenueFilters {
   static const locations = ['Tunalı', 'Bahçelievler'];
-  static const priceLevels = [r'$', r'$$', r'$$$', r'$$$$', r'$$$$$'];
+  static const priceLevels = ['₺', '₺₺', '₺₺₺'];
 }
 
 String formatPriceDisplay(String priceBand) {
-  switch (priceBand) {
-    case '₺':
-      return r'$';
-    case '₺₺':
-      return r'$$$';
-    case '₺₺₺':
-      return r'$$$$$';
-    default:
-      return r'$$$';
+  if (VenueFilters.priceLevels.contains(priceBand)) {
+    return priceBand;
   }
+  return '₺₺';
 }
 
 String? priceLevelToApiBand(String displayLevel) {
-  switch (displayLevel) {
-    case r'$':
-      return '₺';
-    case r'$$$':
-      return '₺₺';
-    case r'$$$$$':
-      return '₺₺₺';
-    default:
-      return null;
+  if (VenueFilters.priceLevels.contains(displayLevel)) {
+    return displayLevel;
   }
+  return null;
 }
 
 bool venueMatchesPriceFilter(String priceBand, String? selectedPrice) {
   if (selectedPrice == null) return true;
-  return formatPriceDisplay(priceBand) == selectedPrice;
+  return priceBand == selectedPrice;
 }

@@ -2,6 +2,7 @@ from app.core.settings import settings
 from app.db.memory_store import store
 from app.schemas.common import PriceBand, TagType
 from app.schemas.venue import VenueResponse
+from app.services.venue_images import normalize_venue_dict
 
 
 def has_required_tags(venue_tag_ids: list[str], required_tags: list[str], target_type: TagType) -> bool:
@@ -34,4 +35,4 @@ def filter_venues(
     if vibe_tags:
         rows = [venue for venue in rows if has_required_tags(venue["tag_ids"], vibe_tags, TagType.vibe)]
 
-    return [VenueResponse(**venue) for venue in rows]
+    return [VenueResponse(**normalize_venue_dict(dict(venue))) for venue in rows]

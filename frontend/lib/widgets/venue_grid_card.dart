@@ -8,12 +8,14 @@ import '../theme/gri_theme.dart';
 class VenueGridCard extends StatelessWidget {
   const VenueGridCard({
     required this.venue,
+    this.onTap,
     super.key,
   });
 
   static const _starColor = Color(0xFFF59E0B);
 
   final Venue venue;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,12 @@ class VenueGridCard extends StatelessWidget {
       builder: (context, _) {
         final isFavorite = favorites.isFavorite(venue.id);
 
-        return ClipRRect(
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(GriRadii.xl),
+            child: ClipRRect(
           borderRadius: BorderRadius.circular(GriRadii.xl),
           child: Container(
             decoration: BoxDecoration(
@@ -43,7 +50,7 @@ class VenueGridCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  _VenueImage(imageUrl: venue.imageUrl),
+                  _VenueImage(imageUrl: venue.galleryImages.isNotEmpty ? venue.galleryImages.first : venue.imageUrl),
                   const DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -107,6 +114,8 @@ class VenueGridCard extends StatelessWidget {
               ),
             ),
           ),
+        ),
+        ),
         );
       },
     );

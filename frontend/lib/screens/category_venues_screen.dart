@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/venue_filters.dart';
 import '../models/venue.dart';
 import '../services/api_client.dart';
+import '../screens/venue_detail_screen.dart';
 import '../theme/gri_theme.dart';
 import '../widgets/status_states.dart';
 import '../widgets/venue_filter_sheet.dart';
@@ -128,7 +129,10 @@ class _CategoryVenuesScreenState extends State<CategoryVenuesScreen> {
           childAspectRatio: 0.72,
         ),
         itemCount: _venues.length,
-        itemBuilder: (_, index) => VenueGridCard(venue: _venues[index]),
+        itemBuilder: (_, index) => VenueGridCard(
+          venue: _venues[index],
+          onTap: () => openVenueDetail(context, _venues[index]),
+        ),
       ),
     );
   }

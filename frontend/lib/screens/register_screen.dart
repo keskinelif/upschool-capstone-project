@@ -2,93 +2,57 @@ import 'package:flutter/material.dart';
 
 import '../services/api_client.dart';
 import '../services/auth_exception.dart';
-import '../services/auth_session.dart';
 import '../theme/gri_theme.dart';
-import 'admin_screen.dart';
-import 'home_screen.dart';
-import 'register_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({
-    this.popOnSuccess = false,
-    this.initialUsername,
-    this.successMessage,
-    super.key,
-  });
-
-  /// Girişten sonra mevcut ekrana dönmek için (ör. yorum yazma akışı).
-  final bool popOnSuccess;
-  final String? initialUsername;
-  final String? successMessage;
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _api = ApiClient();
-
-  late final TextEditingController _emailController;
-  late final TextEditingController _passwordController;
 
   bool _isLoading = false;
   bool _obscurePassword = true;
   String? _authError;
 
   @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController(text: widget.initialUsername ?? '');
-    _passwordController = TextEditingController();
-    if (widget.successMessage != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.successMessage!)),
-        );
-      });
-    }
-  }
-
-  @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     setState(() => _authError = null);
-
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
     try {
-      final username = _emailController.text.trim();
-      if (username.isEmpty || _passwordController.text.isEmpty) {
-        setState(() => _authError = 'E-posta ve şifre gerekli');
-        return;
-      }
-
-      final tokens = await _api.login(
-        username: username,
+      final username = await _api.register(
+        username: _usernameController.text.trim(),
         password: _passwordController.text,
       );
-      AuthSession.save(tokens);
       if (!mounted) return;
-      if (widget.popOnSuccess) {
-        Navigator.of(context).pop(true);
-        return;
-      }
-      final destination = tokens.isAdmin ? const AdminScreen() : const HomeScreen();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => destination),
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(
+          builder: (_) => LoginScreen(
+            initialUsername: username,
+            successMessage: 'Kayıt başarılı. Şimdi giriş yapın.',
+          ),
+        ),
+        (_) => false,
       );
     } on AuthException catch (err) {
       if (!mounted) return;
       setState(() => _authError = err.message);
-    } catch (err) {
+    } catch (_) {
       if (!mounted) return;
       setState(() => _authError = 'Bağlantı hatası. Tekrar deneyin.');
     } finally {
@@ -113,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text('gri.', style: GriTheme.displayTitle(), textAlign: TextAlign.center),
                     const SizedBox(height: 8),
                     Text(
-                      'Mekan keşfine giriş yap',
+                      'Yeni hesap oluştur',
                       style: GriTheme.caption(),
                       textAlign: TextAlign.center,
                     ),
@@ -124,16 +88,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.text,
+                      controller: _usernameController,
                       textInputAction: TextInputAction.next,
                       autocorrect: false,
                       decoration: const InputDecoration(
-                        hintText: 'Kullanıcı adınız',
+                        hintText: 'ör. elifk',
                       ),
                       validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Kullanıcı adı gerekli';
+                        final username = value?.trim().toLowerCase() ?? '';
+                        if (username.length < 3) {
+                          return 'En az 3 karakter';
+                        }
+                        if (!RegExp(r'^[a-z0-9_]+$').hasMatch(username)) {
+                          return 'Yalnızca harf, rakam ve _ kullanın';
                         }
                         return null;
                       },
@@ -153,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        hintText: '••••••••',
+                        hintText: 'En az 4 karakter',
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
@@ -164,8 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Şifre gerekli';
+                        if (value == null || value.length < 4) {
+                          return 'En az 4 karakter';
                         }
                         return null;
                       },
@@ -181,17 +148,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: GriColors.errorBg,
                           borderRadius: BorderRadius.circular(GriRadii.md),
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.error_outline, color: GriColors.errorText, size: 18),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                _authError!,
-                                style: GriTheme.body().copyWith(color: GriColors.errorText),
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          _authError!,
+                          style: GriTheme.body().copyWith(color: GriColors.errorText),
                         ),
                       ),
                     ],
@@ -203,13 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: FilledButton.styleFrom(
                           backgroundColor: GriColors.primary,
                           foregroundColor: GriColors.onPrimary,
-                          disabledBackgroundColor: GriColors.primary.withAlpha(102),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(GriRadii.full),
-                          ),
-                          textStyle: GriTheme.body().copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: GriColors.onPrimary,
                           ),
                         ),
                         child: _isLoading
@@ -221,17 +175,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: GriColors.onPrimary,
                                 ),
                               )
-                            : const Text('Giriş yap'),
+                            : const Text('Kayıt ol'),
                       ),
                     ),
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: _isLoading
                           ? null
-                          : () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(builder: (_) => const RegisterScreen()),
+                          : () => Navigator.of(context).pushReplacement(
+                                MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
                               ),
-                      child: const Text('Hesabın yok mu? Kayıt ol'),
+                      child: const Text('Zaten hesabın var mı? Giriş yap'),
                     ),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/venue.dart';
+import '../screens/venue_detail_screen.dart';
 import '../services/api_client.dart';
 import '../services/favorites_service.dart';
 import '../theme/gri_theme.dart';
@@ -95,7 +96,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         childAspectRatio: 0.72,
       ),
       itemCount: _venues.length,
-      itemBuilder: (_, index) => VenueGridCard(venue: _venues[index]),
+      itemBuilder: (_, index) => VenueGridCard(
+        venue: _venues[index],
+        onTap: () => openVenueDetail(context, _venues[index]),
+      ),
     );
   }
 }

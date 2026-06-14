@@ -12,6 +12,7 @@ class VenueBase(BaseModel):
     tag_ids: list[str] = Field(default_factory=list)
     price_band: PriceBand
     image_url: str | None = Field(default=None, max_length=500)
+    image_urls: list[str] = Field(default_factory=list, max_length=12)
     maps_url: str | None = Field(default=None, max_length=500)
 
 
@@ -32,6 +33,7 @@ class VenueUpdate(BaseModel):
     tag_ids: list[str] | None = None
     price_band: PriceBand | None = None
     image_url: str | None = Field(default=None, max_length=500)
+    image_urls: list[str] | None = None
     maps_url: str | None = Field(default=None, max_length=500)
 
 

@@ -36,6 +36,7 @@ Kullanıcı kısaltmaları (AI + fallback):
   "tag_ids": [str],
   "price_band": "₺" | "₺₺" | "₺₺₺",
   "image_url": str | null,
+  "image_urls": [str],
   "maps_url": str | null
 }
 ```
@@ -63,3 +64,38 @@ Seed vibe örnekleri: `Ders Çalışma`, `Sessiz`
 
 - `admin` / `admin123` (is_admin: true)
 - `demo` / `demo123`
+
+## Seed demo kullanıcılar (11)
+
+Şifre formatı: `{username}123` (ör. `mehmet` → `mehmet123`)
+
+| Username | Görünen ad |
+|---|---|
+| ayse | Ayşe |
+| mehmet | Mehmet |
+| zeynep | Zeynep |
+| can | Can |
+| elif | Elif |
+| burak | Burak |
+| deniz | Deniz |
+| selin | Selin |
+| emre | Emre |
+| fatma | Fatma |
+| kerem | Kerem |
+
+## Review (yorum)
+
+```python
+{
+  "id": "uuid",
+  "venue_id": str,
+  "user_id": str,
+  "username": str,
+  "display_name": str,
+  "text": str,
+  "status": "pending" | "approved" | "rejected",
+  "created_at": datetime
+}
+```
+
+Seed'de her mekana 2–3 onaylı (`approved`) demo yorum vardır.

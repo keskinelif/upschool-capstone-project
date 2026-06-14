@@ -2,17 +2,13 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.core.security import create_token, decode_token
 from app.core.settings import settings
-from app.db.memory_store import store
-from app.schemas.auth import LoginRequest, RefreshRequest, TokenPair
+from app.db.memory_store import RESERVED_USERNAMES, store
+from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, RegisterResponse, TokenPair
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login", response_model=TokenPair)
-async def login(payload: LoginRequest) -> TokenPair:
-    user = store.users.get(payload.username)
-    if not user or user["password"] != payload.password:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials.")
+def _issue_tokens(user: dict) -> TokenPair:
     access = create_token(
         subject=user["id"],
         token_type="access",
@@ -26,6 +22,32 @@ async def login(payload: LoginRequest) -> TokenPair:
         extra={"is_admin": user["is_admin"]},
     )
     return TokenPair(access_token=access, refresh_token=refresh, is_admin=user["is_admin"])
+
+
+@router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
+async def register(payload: RegisterRequest) -> RegisterResponse:
+    if payload.username in RESERVED_USERNAMES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username is reserved.")
+    if payload.username in store.users:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken.")
+
+    display_name = payload.username[:1].upper() + payload.username[1:]
+    store.users[payload.username] = {
+        "id": payload.username,
+        "password": payload.password,
+        "is_admin": False,
+        "display_name": display_name,
+    }
+    return RegisterResponse(username=payload.username)
+
+
+@router.post("/login", response_model=TokenPair)
+async def login(payload: LoginRequest) -> TokenPair:
+    username = payload.username.strip().lower()
+    user = store.users.get(username)
+    if not user or user["password"] != payload.password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials.")
+    return _issue_tokens(user)
 
 
 @router.post("/refresh", response_model=TokenPair)

@@ -7,6 +7,7 @@ Base URL (lokal): `http://localhost:8000`
 | Method | Path | Auth | Açıklama |
 |---|---|---|---|
 | POST | `/auth/login` | — | `{ username, password }` → tokens |
+| POST | `/auth/register` | — | `{ username, password }` → `{ username }` (giriş ayrı) |
 | POST | `/auth/refresh` | refresh token | Yeni access token |
 
 ## Mekanlar
@@ -14,10 +15,27 @@ Base URL (lokal): `http://localhost:8000`
 | Method | Path | Auth | Query / Body |
 |---|---|---|---|
 | GET | `/venues` | — | `location`, `product_tags[]`, `vibe_tags[]`, `price_band` |
+| GET | `/venues/{id}` | — | Tek mekan detayı |
 | POST | `/venues` | Admin JWT | `VenueCreate` |
 | PATCH | `/venues/{id}` | Admin JWT | `VenueUpdate` |
 
 `price_band`: `₺` \| `₺₺` \| `₺₺₺`
+
+## Yorumlar
+
+| Method | Path | Auth | Açıklama |
+|---|---|---|---|
+| GET | `/reviews/venue/{venue_id}` | — | Mekanın onaylı yorumları |
+| POST | `/reviews` | JWT | `{ venue_id, text }` → `pending` yorum |
+
+## Admin
+
+| Method | Path | Auth | Açıklama |
+|---|---|---|---|
+| GET | `/admin/reviews/pending` | Admin JWT | Onay bekleyen yorumlar |
+| GET | `/admin/reviews/venue/{venue_id}` | Admin JWT | Mekanın tüm yorumları |
+| POST | `/admin/reviews/decision` | Admin JWT | `{ review_id, status }` onay/red |
+| DELETE | `/admin/reviews/{review_id}` | Admin JWT | Yorumu sil |
 
 ## Etiketler
 

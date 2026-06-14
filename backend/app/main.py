@@ -9,6 +9,7 @@ from app.api import (
     routes_auth,
     routes_contributions,
     routes_map,
+    routes_reviews,
     routes_system,
     routes_tags,
     routes_venues,
@@ -40,4 +41,5 @@ app.include_router(routes_venues.router)
 app.include_router(routes_ai.router)
 app.include_router(routes_map.router)
 app.include_router(routes_contributions.router)
+app.include_router(routes_reviews.router)
 app.include_router(routes_admin.router)

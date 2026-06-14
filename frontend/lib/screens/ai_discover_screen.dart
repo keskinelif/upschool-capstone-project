@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/ai_discover_result.dart';
 import '../services/api_client.dart';
+import '../screens/venue_detail_screen.dart';
 import '../theme/gri_theme.dart';
 import '../widgets/status_states.dart';
 import '../widgets/venue_grid_card.dart';
@@ -130,7 +131,10 @@ class _AiDiscoverScreenState extends State<AiDiscoverScreen> {
                 childAspectRatio: 0.72,
               ),
               itemCount: result.venues.length,
-              itemBuilder: (_, index) => VenueGridCard(venue: result.venues[index]),
+              itemBuilder: (_, index) => VenueGridCard(
+                venue: result.venues[index],
+                onTap: () => openVenueDetail(context, result.venues[index]),
+              ),
         ),
       ),
     );
