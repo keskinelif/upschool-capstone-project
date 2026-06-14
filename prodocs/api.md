@@ -80,4 +80,4 @@ Response:
 
 ## CORS (MVP)
 
-Yalnızca `localhost` / `127.0.0.1` — production web deploy için genişletilmeli.
+`localhost` / `127.0.0.1` ve production için `https://*.vercel.app` (regex, `main.py`).

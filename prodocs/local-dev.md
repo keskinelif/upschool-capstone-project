@@ -52,10 +52,31 @@ $r.used_fallback   # False = Gemini çalışıyor
 
 ## Render deploy
 
+**Canlı API:** https://upschool-capstone-project.onrender.com
+
 Environment:
 - `GEMINI_API_KEY`
 - `LLM_MODEL=gemini-2.5-flash`
 - `JWT_SECRET` (güçlü değer)
+
+Root: `backend` · Python 3 · Free tier · Auto-deploy on push.
+
+## Vercel (frontend)
+
+**Canlı uygulama:** https://gri-web-ten.vercel.app
+
+```powershell
+cd frontend
+flutter build web --release --dart-define=API_BASE_URL=https://upschool-capstone-project.onrender.com
+cd build/web
+npx.cmd vercel --prod
+```
+
+## Mekan fotoğrafları
+
+`backend/static/venues/` — GitHub raw URL. Bkz. [backend/static/venues/README.md](../backend/static/venues/README.md)
+
+Seed verisi: `backend/app/db/memory_store.py` — push sonrası Render restart ile yüklenir.
 
 ## Sık hatalar
 

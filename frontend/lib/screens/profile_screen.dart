@@ -24,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Text(
-                'AK',
+                'UP',
                 style: GriTheme.h3().copyWith(color: GriColors.onPrimary),
               ),
             ),

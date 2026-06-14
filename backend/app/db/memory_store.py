@@ -245,7 +245,7 @@ def seed_data() -> None:
     _seed_review(
         venue_id=venue_bahce,
         username="zeynep",
-        text="Filtre kahve çok başarılı, Bahçelievler'in en iyisi.",
+        text="Filtre kahve çok başarılı, Tunalı'nın en iyisi.",
         created_at=datetime(2026, 6, 7, 16, 45, tzinfo=timezone.utc),
     )
     _seed_review(

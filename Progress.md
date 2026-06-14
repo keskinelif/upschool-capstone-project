@@ -82,9 +82,36 @@ Her girişte kısa tutun:
 - `GEMINI_API_KEY` yalnızca `backend/.env` (gitignore); GitHub'a push edilmedi.
 - `.env.example` boş şablon olarak repoda.
 
-**Deploy kararı (henüz uygulanmadı)**
-- Backend → **Render**
-- Flutter web → **Vercel**
+### 2026-06 — Mekan detay, yorumlar, kayıt (commit: `96d167c`)
+
+**Backend**
+- Mekan detay API genişletmesi; yorumlar (`/reviews`), kayıt endpoint'i.
+- Admin yorum moderasyonu.
+
+**Frontend**
+- `VenueDetailScreen` — galeri, fiyat, Maps linki, yorum listesi.
+- Kayıt ekranı; admin moderasyon UI.
+
+---
+
+### 2026-06 — Canlı deploy + seed mekanlar (commit: `3d37104` … `22bffa8`)
+
+**Deploy**
+- Backend: Render Free (`upschool-capstone-project.onrender.com`)
+- Frontend: Vercel CLI (`https://gri-web-ten.vercel.app`)
+- CORS: `*.vercel.app` regex eklendi (`main.py`)
+- Flutter web platform (`frontend/web/`) repoya eklendi
+
+**Veri & görseller**
+- Seed mekanlar gerçek pilot mekanlarla güncellendi: V24 Coffee Club, respublika, Piccolo, Suflabs, Çeyrek (F/P Yemek)
+- Mekan fotoğrafları: `backend/static/venues/` → GitHub raw URL (`_venue_photo()`)
+- Imgur Türkiye'de engelli → repo içi statik görseller tercih edildi
+
+**Karar:** Render Free (Starter değil); cold start kabul edilebilir. Frontend güncellemesi: `flutter build web` + `npx.cmd vercel --prod` (Git push otomatik deploy etmez).
+
+**Bekleyen lokal değişiklikler (henüz push edilmedi)**
+- Profil avatarı: `AK` → `UP`
+- Seed yorum düzeltmesi (respublika / Tunalı uyumu)
 
 ---
 
@@ -99,7 +126,8 @@ Her girişte kısa tutun:
 | AI | OpenRouter kullanılmaz | Brief kararı |
 | AI | LLM mekan uydurmaz | Yalnızca filtre; venue listesi memory store'dan |
 | AI | Fallback: keyword eşleştirme | 429 / key yok / hata → uygulama kırılmaz |
-| Deploy | Render + Vercel | Ayrık backend/frontend; brief ile uyumlu |
+| Deploy | Render Free + Vercel | Canlı MVP; Render auto-deploy (backend), frontend CLI deploy |
+| Görseller | Repo `backend/static/venues/` | Imgur engelli; GitHub raw URL güvenilir |
 | Secrets | Key repoya değil, Render panel + lokal `.env` | Brief güvenlik kuralı |
 
 ---
@@ -114,8 +142,13 @@ Her girişte kısa tutun:
 | Flutter hot restart CanvasKit hatası | Flutter Web bilinen bug | Tam restart (`q` + `flutter run`) veya `--web-renderer html` |
 | `used_fallback: true` hızlı yanıt (~1.5 sn) | Gemini değil keyword fallback çalışıyor | Backend'in doğru süreç olduğunu `used_fallback: false` ile doğrula |
 | API key chat'te paylaşıldı | Güvenlik riski | Google AI Studio'dan key rotate et |
-| CORS (canlı deploy) | Şu an yalnızca localhost | Vercel URL backend CORS'a eklenmeli — **yapılmadı** |
-| Seed az mekan | MVP demo verisi | Admin panelden mekan ekleme veya ileride DB |
+| CORS (canlı deploy) | Production origin yoktu | `*.vercel.app` regex eklendi — **yapıldı** |
+| Seed az mekan | MVP demo verisi | 5 seed mekan + admin CRUD; ileride DB |
+| GitHub CI kırıldı | `widget_test` + analyze info | Test düzeltildi; `--no-fatal-infos` |
+| Render deploy görünmüyor | Auto-deploy sessiz; Events dışında tuş yok | Push sonrası Events'ten kontrol; API `/venues` ile doğrula |
+| Imgur link açılmıyor | TR engeli | Fotoğraflar repoda `backend/static/venues/` |
+| memory_store kaydetme uyarısı | Disk vs editör çakışması | Don't Save → dosyayı yeniden aç veya Revert File |
+| Vercel frontend güncelleme | CLI ile statik deploy | `flutter build web` + `npx.cmd vercel --prod` gerekli |
 
 ---
 

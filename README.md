@@ -10,11 +10,16 @@ Ankara odaklı (Tunalı, Bahçelievler) mekan keşif uygulaması. Kullanıcılar
 
 - Ana sayfa: “Bugün ne yapmak istiyorsun?” + **AI arama** + kategori kartları
 - Kategori / AI sonuçları: 2 sütun mekan grid’i, lokasyon & fiyat filtresi
-- Admin: mekan ekleme/düzenleme, etiket atama, Google Maps linki
-- JWT auth (login, admin yönlendirme)
+- Admin: mekan ekleme/düzenleme, yorum moderasyonu, Google Maps linki
+- Mekan detay: galeri, fiyat bandı, yorumlar, harici Maps
+- JWT auth (login, kayıt, admin yönlendirme)
 - Favoriler (istemci tarafı)
 
 **Pilot bölgeler:** Tunalı, Bahçelievler
+
+**Canlı (MVP):**
+- Uygulama: https://gri-web-ten.vercel.app
+- API: https://upschool-capstone-project.onrender.com
 
 ---
 
@@ -62,6 +67,7 @@ flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000
 |---|---|---|
 | `admin` | `admin123` | Admin |
 | `demo` | `demo123` | Kullanıcı |
+| `ayse` … `kerem` | `{kullanıcı}123` | Demo kullanıcı (11 kişi) |
 
 ---
 
@@ -89,23 +95,34 @@ JWT_SECRET=uzun-rastgele-deger
 Flutter Web (Vercel)  →  FastAPI (Render)  →  Gemini API
 ```
 
+**Canlı URL'ler:** [gri-web-ten.vercel.app](https://gri-web-ten.vercel.app) · [API /health](https://upschool-capstone-project.onrender.com/health)
+
 ### Backend — Render
 
 1. GitHub repo bağla → **Web Service** → root: `backend`
-2. Dockerfile veya `pip install` + `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-3. Environment: `GEMINI_API_KEY`, `JWT_SECRET`, `LLM_MODEL`
-4. Health check: `/health`
+2. Runtime: **Python 3** (Docker değil)
+3. Build: `pip install -r requirements.txt`
+4. Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+5. Instance: **Free** · Health check: `/health`
+6. Environment: `GEMINI_API_KEY`, `JWT_SECRET`, `LLM_MODEL`
+7. Git push → Render **auto-deploy**
 
-### Frontend — Vercel
+### Frontend — Vercel (CLI)
 
-1. GitHub repo bağla → root: `frontend`
-2. Build:
-   ```bash
-   flutter build web --dart-define=API_BASE_URL=https://<render-backend-url>
-   ```
-3. Output directory: `build/web`
+Vercel Flutter build etmez; lokal build + CLI önerilir:
 
-> **Not:** Canlı deploy öncesi backend CORS'a Vercel origin eklenmeli (`main.py`). Henüz yalnızca localhost açık — bkz. [Progress.md](./Progress.md).
+```powershell
+cd frontend
+flutter build web --release --dart-define=API_BASE_URL=https://upschool-capstone-project.onrender.com
+cd build/web
+npx.cmd vercel --prod
+```
+
+> CORS: `main.py` içinde `*.vercel.app` izinli.
+
+### Mekan fotoğrafları
+
+Seed görseller `backend/static/venues/` klasöründe; URL'ler GitHub raw link. Detay: [backend/static/venues/README.md](./backend/static/venues/README.md)
 
 Detay: [tech-stack.md](./tech-stack.md) · [prodocs/local-dev.md](./prodocs/local-dev.md)
 
@@ -134,8 +151,9 @@ Detay: [tech-stack.md](./tech-stack.md) · [prodocs/local-dev.md](./prodocs/loca
 
 ## Sıradaki adımlar
 
-- [ ] Backend CORS → Vercel origin
-- [ ] Staging deploy (Render + Vercel)
+- [x] Backend CORS → Vercel origin
+- [x] Canlı deploy (Render + Vercel)
 - [ ] Kalıcı veritabanı (memory store yerine)
+- [ ] Frontend GitHub otomatik deploy (opsiyonel)
 
 Capstone · [upschool-capstone-project](https://github.com/keskinelif/upschool-capstone-project)
