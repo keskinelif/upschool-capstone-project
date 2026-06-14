@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'screens/explore_screen.dart';
+import 'screens/login_screen.dart';
+import 'services/auth_session.dart';
+import 'theme/gri_theme.dart';
 
 void main() => runApp(const GriApp());
 
@@ -12,13 +15,8 @@ class GriApp extends StatelessWidget {
     return MaterialApp(
       title: 'gri.',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF232529),
-        ),
-        useMaterial3: true,
-      ),
-      home: const ExploreScreen(),
+      theme: GriTheme.material(),
+      home: AuthSession.isLoggedIn ? const ExploreScreen() : const LoginScreen(),
     );
   }
 }

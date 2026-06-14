@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, AliasChoices
 
 
 class LoginRequest(BaseModel):
-    username: str
+    username: str = Field(validation_alias=AliasChoices("username", "email"))
     password: str
 
 
